@@ -9,6 +9,7 @@ async function get_reminder_schedules() {
   )
   const reminder_schedules = await response.json()
 
+  console.log("HERE")
 
 }
 
