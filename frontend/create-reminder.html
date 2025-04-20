@@ -1,13 +1,38 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Create Reminder</title>
+    <script defer src="/src/create-reminder.ts" type="module"></script>
 </head>
+
 <body>
     <a href="/upcoming-reminders.html">Upcoming Reminders</a>
-    Create Reminder
-    
+    <h1>Create Reminder</h1>
+    <h2>Quick Create</h2>
+    <p id="error-msg"></p>
+    <form action="" id="quick-create-reminder-form">
+        <label for="reminder">Reminder</label><br>
+        <textarea type="text" name="reminder" id="reminder" required rows="4" cols="50"></textarea><br>
+        <label for="hint">Hint</label><br>
+        <textarea type="text" name="hint" id="hint" rows="4" cols="50"></textarea><br>
+
+        <label for="time">Notification Time</label>
+        <input type="time" name="notification_time" id="notification_time" value="14:00" required step="3600"><br>
+
+        <label for="html">Quick Everyday</label>
+        <input type="radio" id="quick-everyday" name="schedule" value="quick-everyday" checked><br>
+        <label for="css">Quick Probing</label>
+        <input type="radio" id="quick-probing" name="schedule" value="quick-probing"><br>
+        <input type="submit" value="submit">
+    </form>
+    <h2>Advanced Creation</h2>
+    <a href="/consistent-reminder.html">Consistent Reminder</a><br>
+    <a href="/probing-reminders.html">Probing Reminders</a><br>
+    <a href="/custom-reminder.html">Custom Reminder</a><br>
+
 </body>
+
 </html>

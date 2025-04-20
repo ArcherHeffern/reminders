@@ -8,9 +8,15 @@
     min-width:100px;
     text-align:center;
     cursor:pointer;
+    padding:10px;
 }
 
+a {
+    margin-bottom: 10px;
+    display: block;
+}
 table, th, td {
+    margin-top: 10px;
     border: 1px solid black;
     border-collapse: collapse;
   }
