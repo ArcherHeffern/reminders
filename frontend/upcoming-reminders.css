@@ -1,0 +1,16 @@
+#calendar {
+    display: flex;
+    gap: 10px;
+}
+
+.calendar-day {
+    border:1px solid black;
+    min-width:100px;
+    text-align:center;
+    cursor:pointer;
+}
+
+table, th, td {
+    border: 1px solid black;
+    border-collapse: collapse;
+  }

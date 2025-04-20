@@ -15,10 +15,10 @@ class CreateReminderSchedule(BaseModel):
 class ReminderSchedule(BaseModel):
     reminder_id: int
     reminder: str
+    hint: str
     creation_time: datetime
     reminder_times: list[datetime] 
     schedule: int
-    hint: str
 
 create_database()
 
@@ -56,8 +56,16 @@ async def create_reminder_schedule(create_reminder_schedule_request: CreateRemin
     return 
 
 @app.delete("/reminder_schedule/{reminder_schedule_id}")
-async def delete_reminder_schedule(reminder_schdule_id: int):
-    ...
+async def delete_reminder_schedule(reminder_schedule_id: int):
+    with con as cur:
+        if cur.execute("SELECT * FROM ReminderSchedule WHERE reminder_id = ?;", (reminder_schedule_id,)).fetchone() is None:
+            raise HTTPException(404, f"reminder schedule with id={reminder_schedule_id} not found")
+        cur.execute("""
+            DELETE FROM Reminder WHERE reminder_schedule = ?;
+        """, (reminder_schedule_id,))
+        cur.execute("""
+            DELETE FROM ReminderSchedule WHERE reminder_id = ?;
+        """, (reminder_schedule_id,))
 
 @app.get("/reminder_schedules")
 async def get_reminder_schedules() -> list[ReminderSchedule]:
