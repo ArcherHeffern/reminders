@@ -4,10 +4,11 @@ from fastapi.exceptions import HTTPException
 from constants import Schedule
 from database import con, create_database
 from pydantic import BaseModel
-
+from fastapi.middleware.cors import CORSMiddleware
 
 class CreateReminderSchedule(BaseModel):
     reminder: str
+    hint: str
     reminder_times: list[datetime] 
     schedule: int
 
@@ -17,9 +18,23 @@ class ReminderSchedule(BaseModel):
     creation_time: datetime
     reminder_times: list[datetime] 
     schedule: int
+    hint: str
 
 create_database()
+
 app = FastAPI()
+origins = [
+    "http://localhost:3000",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 
 @app.post("/reminder_schedule")
 async def create_reminder_schedule(create_reminder_schedule_request: CreateReminderSchedule):
@@ -28,8 +43,8 @@ async def create_reminder_schedule(create_reminder_schedule_request: CreateRemin
     with con as cur:
         now = datetime.now(timezone.utc)
         last_row_id = cur.execute("""
-                    INSERT INTO ReminderSchedule (reminder,creation_date, schedule) VALUES (?,?,?);
-                    """, (create_reminder_schedule_request.reminder, now.isoformat(), create_reminder_schedule_request.schedule)).lastrowid
+                    INSERT INTO ReminderSchedule (reminder,hint,creation_date, schedule) VALUES (?,?,?,?);
+                    """, (create_reminder_schedule_request.reminder, create_reminder_schedule_request.hint, now.isoformat(), create_reminder_schedule_request.schedule)).lastrowid
         
         for reminder_time in create_reminder_schedule_request.reminder_times:
             if reminder_time < now:
@@ -54,9 +69,10 @@ async def get_reminder_schedules() -> list[ReminderSchedule]:
             reminder_schedule = ReminderSchedule(
                 reminder_id=row[0],
                 reminder=row[1],
-                creation_time=row[2],
+                hint=row[2],
+                creation_time=row[3],
                 reminder_times=[],
-                schedule=row[3],
+                schedule=row[4],
             )
             reminder_schedule.reminder_times = []
             for reminder_time in cur.execute("""

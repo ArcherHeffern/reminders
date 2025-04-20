@@ -9,6 +9,7 @@ def create_database():
         CREATE TABLE IF NOT EXISTS ReminderSchedule (
             reminder_id     INTEGER PRIMARY KEY AUTOINCREMENT,
             reminder        TEXT,
+            hint            TEXT,
             creation_date   INTEGER,
             schedule        INTEGER
         )""")

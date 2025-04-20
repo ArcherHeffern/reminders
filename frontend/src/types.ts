@@ -1,6 +1,7 @@
 export interface ReminderSchedule {
-    reminder_id: Number,
-    reminder: String,
-    creation_date: Date,
-    schedule: Number,
+    reminder_id: number,
+    reminder: string,
+    hint: string,
+    creation_time: Date,
+    schedule: number,
 };
