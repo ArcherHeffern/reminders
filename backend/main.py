@@ -1,10 +1,14 @@
 from fastapi import FastAPI
-from datetime import datetime, timezone
+from contextlib import asynccontextmanager
+from datetime import datetime, timezone, timedelta
 from fastapi.exceptions import HTTPException
 from constants import Schedule
 from database import con, create_database
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
+from apscheduler.schedulers.background import BackgroundScheduler
+from apscheduler.triggers.interval import IntervalTrigger
+from chron import ReminderService
 
 class CreateReminderSchedule(BaseModel):
     reminder: str
@@ -20,13 +24,22 @@ class ReminderSchedule(BaseModel):
     reminder_times: list[datetime] 
     schedule: int
 
-create_database()
 
-app = FastAPI()
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    create_database()
+    reminder_service = ReminderService()
+    scheduler = BackgroundScheduler()
+    reminder_service.trigger()
+    scheduler.add_job(reminder_service.trigger, IntervalTrigger(hours=1, start_date=datetime.now()))
+    scheduler.start()
+    yield
+
+app = FastAPI(lifespan=lifespan)
+
 origins = [
     "http://localhost:3000",
 ]
-
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
